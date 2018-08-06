@@ -12,7 +12,8 @@
   echoPin: A0
   display SCL: A4
   display SDA: A5
-  button (NC): between 5V and GND&D2
+  button (NC): between 5V and D2
+  D2 pulled-down to ground with a 10 KΩ resistor
 */
 
 #include <LiquidCrystal_I2C.h>
@@ -21,10 +22,10 @@ LiquidCrystal_I2C lcd(0x27, 2, 1, 0, 4, 5, 6, 7, 3, POSITIVE);
 
 const long intervalEat = 120000;
 const long intervalLight = 5000;
-int distanta = 12;
+int distance = 12;
 long duration;
 int distanceCm;
-int numarator = 0;
+int counter = 0;
 int buttonState = 0;
 unsigned long previousMillisEat = 0;
 unsigned long previousMillisButton = 0;
@@ -62,17 +63,17 @@ void loop() {
   distanceCm= duration*0.034/2;
   
   // distance smaller than 12 cm && (just powered on || intervalEat passed)
-  if (distanceCm < distanta && ((currentMillis < intervalEat && numarator == 0) || (currentMillis - previousMillisEat >= intervalEat))) {
+  if (distanceCm < distance && ((currentMillis < intervalEat && counter == 0) || (currentMillis - previousMillisEat >= intervalEat))) {
     previousMillisEat = currentMillis;
-    numarator++;
+    counter++;
     Serial.print(distanceCm);
     Serial.println(" cm");
-    Serial.print(numarator);
+    Serial.print(counter);
     Serial.println(" pisici");
     Serial.println(currentMillis);
     lcd.backlight();
     lcd.setCursor(0,0);
-    lcd.print(numarator);
+    lcd.print(counter);
     delay(intervalLight);
     lcd.noBacklight();
   }
